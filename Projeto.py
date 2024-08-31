@@ -13,6 +13,7 @@ dataframes_estados = dict(tuple(dados.groupby('UF')))
 dadosUF = dataframes_estados["RJ"]
 dadosUF.fillna(0, inplace=True)
 
+#Renomeando Colunas
 colunas_selecionadas = [23, 50, 8, 11, 12, 13, 14, 15, 17, 1428, 1436, 1444, 1505, 1537, 1544, 1578, 1581, 1585, 
                         1588, 1591, 1594, 1597, 1600, 1603, 1606, 1609, 1612, 1615, 1618, 1621, 1624, 1627, 1631, 
                         1634, 1637, 1641, 1645, 1649, 1653, 1657, 1661, 1665, 1669, 1673, 1676, 1679, 1682, 1685, 
@@ -20,7 +21,13 @@ colunas_selecionadas = [23, 50, 8, 11, 12, 13, 14, 15, 17, 1428, 1436, 1444, 150
                         1963, 1992, 2021, 2050, 2079, 2108, 2137, 2181, 2182, 21]
                         
 dados_UF = dadosUF.iloc[:, colunas_selecionadas]
-dados_UF = dados_UF.copy
+dados_UF = dados_UF.copy()
+
+# Preencher NaN com 0 em todo o DataFrame
+dados_UF = dados_UF.fillna(0)
+
+# Remover vírgulas e converter todas as colunas numéricas para float
+dados_UF = dados_UF.apply(lambda x: x.astype(str).replace(',', '.', regex=True).astype(float) if x.dtype == 'object' else x)
 
 # # # Alguns dados estão sendo lidos como string, por isso tem de ser convertidos para valores numéricos
 # dados_UF['P3.1_4'] = dados_UF['P3.1_4'].astype(str).replace(',', '', regex=True).astype(float)
@@ -41,6 +48,7 @@ nomesvariaveis = [
     "Secadora_Aquecimento", "Secadora_Centrifuga", "Aquecedor_de_Ambiente", "Ventilador_de_Teto", "Circulador_de_Ar", "Videogame",
     "Notebook", "Som_Radio", "Computador", "Filtro_de_Agua", "Adega", "Chuveiros", "Aquecimento_Chuveiro", "CLASSE"
 ]
+
 dados_UF.columns = nomesvariaveis
 
 # Removendo Residências que possuem atividade comercial
@@ -48,15 +56,37 @@ dados_UF = dados_UF[dados_UF['Comercio'] == 1]
 dados_UF.drop(columns=['Comercio'], inplace=True)
 
 # Removendo dados Duplicados
-colunas_com_sufixos = [col for col in dados_UF.columns if '.' in col]
-colunas_sem_sufixos = [col for col in dados_UF.columns if col not in colunas_com_sufixos]
-dados_UF = dados_UF[colunas_sem_sufixos]
+# Identificar colunas duplicadas
+duplicatas = dados_UF.columns[dados_UF.columns.duplicated()].unique()
+# print(f"Colunas duplicadas: {duplicatas}")
+
+# Obter nomes de colunas e verificar duplicados
+colunas = dados_UF.columns
+contagem = colunas.value_counts()
+duplicadas = contagem[contagem > 1].index.tolist()
+
+novos_nomes = []
+nomes_contador = {nome: 1 for nome in duplicadas}
+
+for nome in colunas:
+    if nome in duplicadas:
+        novos_nomes.append(f"{nome}_{nomes_contador[nome]}")
+        nomes_contador[nome] += 1
+    else:
+        novos_nomes.append(nome)
+
+dados_UF.columns = novos_nomes
+
 dados_UF['Chuveiros_Eletricos'] = dados_UF.apply(lambda row: row['Chuveiros'] if row['Aquecimento_Chuveiro'] == 1 else 0, axis=1)
 
 # Removendo Computador, Notebook, Lava Loucas, Secadora de Roupa e as Colunas do Chuveiro
 dados_UF = dados_UF.drop(columns=[
-    "Computador", "Notebook", "Secadora_de_Roupa", "Lava_Loucas", "Aquecimento_Chuveiro", "Chuveiros"
+    "Computador", "Notebook", "Secadora_de_Roupa", "Lava_Loucas_2", "Aquecimento_Chuveiro", "Chuveiros", "Maquina_de_Lavar_2", "Geladeiras_2",
+      "Freezer_2", "Microondas_2"
 ])
+
+print(dados_UF.info())
+
 
 dados_UF_6classes = dados_UF
 
