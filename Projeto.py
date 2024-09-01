@@ -1,6 +1,8 @@
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import StratifiedKFold
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 
 # Leitura dos dados
@@ -85,10 +87,10 @@ dados_UF = dados_UF.drop(columns=[
       "Freezer_2", "Microondas_2"
 ])
 
-print(dados_UF.info())
+# print(dados_UF.info())
 
 
-dados_UF_6classes = dados_UF
+dados_UF_6classes = dados_UF.copy()
 
 # Definir as condições e os valores correspondentes
 conditions = [
@@ -106,3 +108,48 @@ values = ["A", "B1", "B2", "C1", "C2", "DE"]
 dados_UF_6classes['CLASSE'] = np.select(conditions, values, default=dados_UF_6classes['CLASSE'].astype(str))
 
 proporcao_classes = dados_UF['CLASSE'].value_counts(normalize=True)
+
+# print(dados_UF_6classes.info())
+
+
+# #Verificando correlação entre os dados
+
+# # Calcula a matriz de correlação
+# corr_matrix = dados_UF.corr()
+
+# # Cria o gráfico de correlação
+# plt.figure(figsize=(8, 6))
+# sns.heatmap(corr_matrix, annot=False, cmap='coolwarm', center=0, square=True, linewidths=.5)
+# plt.show()
+
+
+
+#Análise Exploratória de cada Classe
+
+# Supondo que 'dados_UF' seja o seu DataFrame original
+
+# Criando DataFrames para cada classe
+df_classe_1 = dados_UF[dados_UF['CLASSE'] == 1]
+df_classe_2 = dados_UF[dados_UF['CLASSE'] == 2]
+df_classe_3 = dados_UF[dados_UF['CLASSE'] == 3]
+df_classe_4 = dados_UF[dados_UF['CLASSE'] == 4]
+df_classe_5 = dados_UF[dados_UF['CLASSE'] == 5]
+df_classe_6 = dados_UF[dados_UF['CLASSE'] == 6]
+
+# # Exibindo os primeiros registros de cada DataFrame para verificação
+# print(df_classe_1.head())
+# print(df_classe_2.head())
+# print(df_classe_3.head())
+# print(df_classe_4.head())
+# print(df_classe_5.head())
+# print(df_classe_6.head())
+
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Criando boxplots de todas as variáveis no DataFrame
+plt.figure(figsize=(12, 8))
+sns.boxplot(data=df_classe_1)
+plt.xticks(rotation=90)  # Rotaciona os nomes das variáveis para caber no gráfico
+plt.show()
