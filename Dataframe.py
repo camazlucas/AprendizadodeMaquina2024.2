@@ -81,9 +81,14 @@ dados_UF = dados_UF.drop(columns=[
       "Freezer_2", "Microondas_2"
 ])
 
+# Visualizaçao dos Dados
+
 # print(dados_UF.info())
 
-dados_UF.to_csv('dados.csv', index=False)
+print(dados_UF.head())
+
+# Exportando os dados para csv
+dados_UF.to_csv('dados.csv', index=False, sep=',')
 
 
 # dados_UF_6classes = dados_UF.copy()
