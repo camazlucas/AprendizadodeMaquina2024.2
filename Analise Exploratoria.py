@@ -37,18 +37,6 @@ proporcao_classes = dados['CLASSE'].value_counts(normalize=True)
 # print(dados_6classes.info())
 
 
-# #Verificando correlação entre os dados
-
-# # Calcula a matriz de correlação
-# corr_matrix = dados_UF.corr()
-
-# # Cria o gráfico de correlação
-# plt.figure(figsize=(8, 6))
-# sns.heatmap(corr_matrix, annot=False, cmap='coolwarm', center=0, square=True, linewidths=.5)
-# plt.show()
-
-
-
 #Análise Exploratória de cada Classe
 
 # Supondo que 'dados_UF' seja o seu DataFrame original
@@ -71,7 +59,7 @@ df_classe_DE = dados[dados['CLASSE'] == 6]
 
 
 # Criando boxplots de todas as variáveis no DataFrame
-plt.figure(figsize=(12, 8))
-sns.boxplot(data=df_classe_A)
-plt.xticks(rotation=90)  # Rotaciona os nomes das variáveis para caber no gráfico
-plt.show()
+# plt.figure(figsize=(12, 8))
+# sns.boxplot(data=df_classe_A)
+# plt.xticks(rotation=90)  # Rotaciona os nomes das variáveis para caber no gráfico
+# plt.show()
